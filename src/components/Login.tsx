@@ -1,12 +1,73 @@
-import React from "react";
 import Header from "./Header";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import checkValidData from "../utils/validate";
+import { auth } from "../utils/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import type { FirebaseError } from "firebase/app";
+
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
+  const [errorMessage, SetErrorMessage] = useState<string | null>(null);
+
+  const email = useRef<HTMLInputElement>(null);
+  const password = useRef<HTMLInputElement>(null);
+  const name = useRef<HTMLInputElement>(null);
 
   const handleSignIn = () => {
     setIsSignInForm(!isSignInForm);
   };
+
+  const handleForm = () => {
+    const message = checkValidData(
+      email.current?.value || "",
+      password.current?.value || "",
+      name.current?.value || ""
+    );
+    SetErrorMessage(message);
+    if (message) return;
+    if (!isSignInForm) {
+      createUserWithEmailAndPassword(
+        auth,
+        email.current!.value,
+        password.current!.value
+      ).then(async (userCredential) => {
+        const user = userCredential.user;
+
+        try {
+          await updateProfile(user, {
+            displayName: name.current?.value,
+          });
+
+          await user.reload();
+
+          console.log("Profile updated:", user.displayName);
+        } catch (error) {
+          const err = error as FirebaseError;
+          SetErrorMessage(err.message);
+        }
+      });
+    } else {
+      signInWithEmailAndPassword(
+        auth,
+        email.current!.value,
+        password.current!.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+        });
+    }
+  };
+
   return (
     <div className="bg-gradient-to-br from-gray-900 to-black min-h-screen">
       <Header />
@@ -31,22 +92,29 @@ const Login = () => {
 
           {!isSignInForm && (
             <input
+              ref={name}
               type="text"
               placeholder="Name"
               className="border border-white/20 bg-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500 p-3 rounded-lg transition"
             />
           )}
           <input
+            ref={email}
             type="text"
             placeholder="Email"
             className="border border-white/20 bg-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500 p-3 rounded-lg transition"
           />
           <input
-            type="text"
+            ref={password}
+            type="password"
             placeholder="password"
             className="border border-white/20 bg-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500 p-3 rounded-lg transition"
           />
-          <button className="border border-white/20 p-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 transition font-semibold">
+          <p className="text-red-600 py-2">{errorMessage}</p>
+          <button
+            className="border border-white/20 p-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 transition font-semibold"
+            onClick={handleForm}
+          >
             Submit
           </button>
         </form>
