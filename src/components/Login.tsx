@@ -10,19 +10,25 @@ const Login = () => {
   return (
     <div className="bg-gradient-to-br from-gray-900 to-black min-h-screen">
       <Header />
-
       <div className="absolute w-105 h-105 bg-blue-500/20 blur-3xl rounded-full top-20 left-20"></div>
       <div className="flex flex-1 justify-center items-center">
         <form
-          className="flex flex-col gap-6 justify-center bg-white/10 backdrop-blur-xl border border-white/10 rounded-lg w-[500px]  my-30 mx-auto text-white p-6 shadow-[0_8px_32px_rgba(0,0,0,0.6)] p-8 "
+          key={isSignInForm ? "signin" : "signup"}
+          className="flex flex-col gap-6 justify-center bg-white/10 backdrop-blur-xl border border-white/10 rounded-lg w-[500px]  my-30 mx-auto text-white p-6 shadow-[0_8px_32px_rgba(0,0,0,0.6)] p-8 opacity-0 animate-[fadeIn_1.6s_ease-out_forwards]"
           onSubmit={(e) => e.preventDefault()}
         >
           <div>
-            <h1 className="text-2xl font-bold">Welcome back</h1>
-            <p className="text-gray-400 text-sm my-2" onClick={handleSignIn}>
-              Login to continue
+            <h1 className="text-2xl font-bold">
+              {isSignInForm ? "Welcome Back" : "Create Account"}
+            </h1>
+            <p
+              className="text-gray-400 text-sm my-2 cursor-pointer"
+              onClick={handleSignIn}
+            >
+              Login to continue or Click here to Sign Up
             </p>
           </div>
+
           {!isSignInForm && (
             <input
               type="text"
