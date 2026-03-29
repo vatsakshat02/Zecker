@@ -1,7 +1,6 @@
 import Header from "./Header";
 import { useEffect, useState } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
+import { CalendarBasic } from "@/components/CalendarWithPresets";
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState<string[]>([]);
@@ -29,8 +28,7 @@ const Dashboard = () => {
           ))}
         </div>
         <div>
-          {" "}
-          <Calendar />
+          <CalendarBasic />
         </div>
       </div>
     </div>
