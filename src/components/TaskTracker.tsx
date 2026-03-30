@@ -1,16 +1,53 @@
 import Header from "./Header";
 import { useState, useEffect } from "react";
 
+export type Task = {
+  id: string;
+  text: string;
+  date: string;
+  completed: boolean;
+};
+
 const TaskTracker = () => {
   const [task, setTask] = useState("");
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loaded, setLoaded] = useState(false);
+
+  const selectedDate =
+    localStorage.getItem("selectedDate") || new Date().toDateString();
 
   const handleTask = () => {
     if (!task.trim()) return;
 
-    setTasks([...tasks, task]);
+    setTasks([
+      ...tasks,
+      {
+        id: crypto.randomUUID(),
+        text: task,
+        date: selectedDate,
+        completed: false,
+      },
+    ]);
     setTask("");
+  };
+
+  const toggleComplete = (index: number) => {
+    const updated = [...tasks];
+
+    const actualIndex = tasks.findIndex(
+      (task) => task.id === todaysTasks[index].id
+    );
+    updated[actualIndex].completed = !updated[actualIndex].completed;
+    setTasks(updated);
+  };
+
+  const deleteTasks = (index: number) => {
+    const actualIndex = tasks.findIndex(
+      (task) => task.id === todaysTasks[index].id
+    );
+
+    const updated = tasks.filter((_, i) => i !== actualIndex);
+    setTasks(updated);
   };
 
   useEffect(() => {
@@ -28,6 +65,8 @@ const TaskTracker = () => {
 
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
+
+  const todaysTasks = tasks.filter((t) => t.date === selectedDate);
 
   return (
     <div className="bg-gradient-to-br from-gray-900 to-black min-h-screen">
@@ -49,20 +88,26 @@ const TaskTracker = () => {
             Add
           </button>
           <div className="">
-            {tasks.map((t, index) => (
+            {todaysTasks.map((t, index) => (
               <div
                 className="flex justify-between animate-[fadeIn_1.6s_ease-out_forwards]"
                 key={index}
               >
                 <div className="border border-white/20 bg-white/10 mt-2 rounded-lg p-3 w-[480px] ml-3 ">
-                  {t}
+                  {t.text}
                 </div>
                 <div className="flex gap-2  ">
-                  <span className="border border-white/20 bg-white/10 mt-2 rounded-lg p-3 ml-2">
+                  <span
+                    className="border border-white/20 bg-white/10 mt-2 rounded-lg p-3 ml-2"
+                    onClick={() => deleteTasks(index)}
+                  >
                     Delete
                   </span>
-                  <span className="border border-white/20 bg-white/10 mt-2 rounded-lg p-3 ">
-                    Completed
+                  <span
+                    className="border border-white/20 bg-white/10 mt-2 rounded-lg p-3 "
+                    onClick={() => toggleComplete(index)}
+                  >
+                    {t.completed ? "Undo" : "Completed"}
                   </span>
                 </div>
               </div>
