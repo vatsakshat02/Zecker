@@ -23,7 +23,7 @@ const Dashboard = () => {
     localStorage.setItem("selectedDate", selectedDate.toDateString());
   }, [selectedDate]);
   return (
-    <div className="bg-gradient-to-br from-gray-900 to-black min-h-screen">
+    <div className="bg-gradient-to-br from-gray-800 to-black min-h-screen">
       <Header />
       <div className="flex  justify-center gap-20 items-center pt-32  text-white ">
         <div className="border  border-white/20 bg-white/10 rounded-lg p-3">
