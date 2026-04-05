@@ -27,7 +27,7 @@ const Dashboard = () => {
       <Header />
       <div className="flex  justify-center gap-21 items-center pt-32  text-white ">
         <div className="border  border-white/20 bg-white/10 rounded-lg p-3">
-          <h1 className="font-bold text-2xl  p-2">
+          <h1 className="font-bold text-xl  p-2">
             Tasks for {formattedSelectedDate}
           </h1>
           {filteredTask.length == 0 ? (
