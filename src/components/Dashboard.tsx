@@ -26,7 +26,7 @@ const Dashboard = () => {
     <div className="bg-gradient-to-br from-gray-900 to-black min-h-screen">
       <Header />
       <div className="flex  justify-center gap-20 items-center pt-32  text-white ">
-        <div className="border  border-white/20 bg-white/10 rounded-lg p-3">
+        <div className="border  border-white/20 bg-white/10 rounded-md p-3">
           <h1 className="font-bold text-xl  p-2">
             Tasks for {formattedSelectedDate}
           </h1>
